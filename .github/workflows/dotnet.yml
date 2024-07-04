@@ -5,24 +5,39 @@ name: .NET
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: ./ci_cd
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET3ưq
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      - uses: actions/checkout@v3
+      - name: Build the Docker image
+        run: docker build --progress=plain -t luantruong/cicd .
+      - name: Log in to Docker Hub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Push the Docker image
+        run: docker push luantruong/cicd
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          key: ${ { secrets.EC2_SSH_KEY }}
+          host: ${ { secrets.HOST_DNS }}
+          username: ${ { secrets.USERNAME }}
+
+          script: |
+            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+            docker pull luantruong/cicd:latest
+            docker stop my-app || true
+            docker rm my-app || true
+            docker run -d --name my-app -p 5272:5272 --restart unless-stopped luantruong/cicd:latest
