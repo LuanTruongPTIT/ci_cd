@@ -34,6 +34,6 @@ jobs:
           script: |
             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
             docker pull luantruong123/cicd:latest
-            docker stop my-app || true
-            docker rm my-app || true
-            docker run -d --name my-app -p 5272:5272 --restart unless-stopped luantruong123/cicd:lates
+            docker stop my-app
+            docker rm my-app
+            docker run -d --name my-app -p 5272:5272 --restart unless-stopped luantruong123/cicd:latest
