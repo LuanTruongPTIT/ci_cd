@@ -31,3 +31,4 @@
 /Users/luan/Documents/ci_cd/ci_cd/obj/Debug/net8.0/ci_cd.pdb
 /Users/luan/Documents/ci_cd/ci_cd/obj/Debug/net8.0/ci_cd.genruntimeconfig.cache
 /Users/luan/Documents/ci_cd/ci_cd/obj/Debug/net8.0/ref/ci_cd.dll
+/Users/luan/Documents/ci_cd/ci_cd/obj/Debug/net8.0/ci_cd.sourcelink.json
