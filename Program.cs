@@ -39,7 +39,7 @@ app.MapGet("/weatherforecast", () =>
 app.MapGet("/test", () =>
 {
   return "hello world";
-})
+});
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
